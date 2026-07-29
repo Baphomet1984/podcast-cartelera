@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARTELERA // Sala de Podcasts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#0a0118;
+    --bg-void-2:#120826;
+    --panel:#150a2e;
+    --panel-edge:#241246;
+    --neon-magenta:#ff2e88;
+    --neon-cyan:#05f2db;
+    --neon-yellow:#f9f002;
+    --neon-violet:#9b30ff;
+    --text-soft:#e7ddff;
+    --text-dim:#9082b8;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(255,46,136,.18), transparent 45%),
+      radial-gradient(ellipse at 85% 0%, rgba(5,242,219,.14), transparent 40%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0px, rgba(255,255,255,.02) 1px, transparent 1px, transparent 3px),
+      var(--bg-void);
+    color:var(--text-soft);
+    font-family:'Rajdhani', sans-serif;
+    overflow-x:hidden;
+  }
+
+  /* ---------- MARQUEE HEADER ---------- */
+  .marquee-frame{
+    position:relative;
+    margin:22px auto 10px;
+    max-width:1180px;
+    padding:6px;
+    border-radius:14px;
+    background:linear-gradient(160deg,#2a1550,#150a2e 60%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.05), 0 20px 60px -20px rgba(255,46,136,.35);
+  }
+
+  .marquee-bulbs{
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    pointer-events:none;
+  }
+  .marquee-bulbs span{
+    position:absolute;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--neon-yellow);
+    box-shadow:0 0 6px 2px var(--neon-yellow);
+    animation:bulb-chase 1.6s infinite steps(1);
+  }
+
+  .marquee-inner{
+    position:relative;
+    border-radius:10px;
+    padding:34px 20px 28px;
+    text-align:center;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%),
+      var(--bg-void-2);
+    border:1px solid rgba(255,255,255,.06);
+  }
+
+  .eyebrow{
+    font-family:'Share Tech Mono', monospace;
+    letter-spacing:.45em;
+    font-size:11px;
+    color:var(--neon-cyan);
+    text-shadow:0 0 8px rgba(5,242,219,.7);
+    margin:0 0 10px;
+  }
+
+  h1.title{
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:clamp(2rem, 6vw, 3.6rem);
+    margin:0;
+    letter-spacing:.05em;
+    color:#fff;
+    text-shadow:
+      0 0 6px rgba(255,255,255,.6),
+      0 0 22px var(--neon-magenta),
+      0 0 46px var(--neon-magenta);
+    animation:flicker 5s infinite;
+  }
+
+  .subtitle{
+    margin:12px auto 0;
+    max-width:560px;
+    font-size:clamp(.9rem, 2vw, 1.05rem);
+    color:var(--text-dim);
+  }
+
+  .now-showing{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:18px;
+    padding:6px 16px;
+    border:1px solid var(--neon-cyan);
+    border-radius:999px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:12px;
+    letter-spacing:.2em;
+    color:var(--neon-cyan);
+  }
+  .now-showing .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--neon-cyan);
+    box-shadow:0 0 8px var(--neon-cyan);
+    animation:pulse 1.4s infinite;
+  }
+
+  /* ---------- FILM STRIP DIVIDER ---------- */
+  .filmstrip{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    max-width:1180px;
+    margin:26px auto 18px;
+    padding:0 20px;
+  }
+  .filmstrip span{
+    width:12px;height:12px;
+    background:var(--panel-edge);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:2px;
+  }
+
+  /* ---------- GRID ---------- */
+  .cartelera{
+    max-width:1180px;
+    margin:0 auto 60px;
+    padding:0 20px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:26px 22px;
+  }
+
+  /* force 4 / 4 / 2 rhythm on desktop */
+  .cartelera .slot:nth-child(9),
+  .cartelera .slot:nth-child(10){
+    grid-column:span 2;
+  }
+
+  @media (max-width:900px){
+    .cartelera{ grid-template-columns:repeat(2, 1fr); }
+    .cartelera .slot:nth-child(9),
+    .cartelera .slot:nth-child(10){ grid-column:span 1; }
+  }
+  @media (max-width:520px){
+    .cartelera{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- SLOT (screen + ticket) ---------- */
+  .slot{
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  .screen{
+    position:relative;
+    aspect-ratio:16/9;
+    border-radius:10px;
+    padding:10px;
+    background:linear-gradient(145deg,#1c0f3a,#0d0620);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.05),
+      0 14px 34px -16px rgba(0,0,0,.8);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .screen:hover{
+    transform:translateY(-4px);
+    box-shadow:
+      0 0 0 1px var(--neon-cyan),
+      0 0 26px -2px var(--neon-cyan),
+      0 18px 40px -16px rgba(0,0,0,.85);
+  }
+
+  .sala-tag{
+    position:absolute;
+    top:-11px; left:14px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:11px;
+    letter-spacing:.15em;
+    background:var(--neon-magenta);
+    color:#160225;
+    padding:3px 9px;
+    border-radius:4px;
+    box-shadow:0 0 10px rgba(255,46,136,.7);
+    z-index:2;
+  }
+
+  .embed-holder{
+    position:relative;
+    width:100%;
+    height:100%;
+    border-radius:6px;
+    overflow:hidden;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 1px, transparent 1px, transparent 3px),
+      #05020c;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* placeholder look — replace this div's content with the podcast embed code */
+  .embed-placeholder{
+    text-align:center;
+    color:var(--text-dim);
+    font-family:'Share Tech Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    padding:10px;
+  }
+  .embed-placeholder .play-glyph{
+    width:38px;height:38px;
+    margin:0 auto 10px;
+    border-radius:50%;
+    border:1px solid var(--neon-cyan);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--neon-cyan);
+    box-shadow:0 0 14px rgba(5,242,219,.5) inset, 0 0 10px rgba(5,242,219,.35);
+  }
+
+  .embed-holder iframe,
+  .embed-holder audio,
+  .embed-holder embed{
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+  }
+
+  /* ---------- TICKET / DESCRIPTION BOX ---------- */
+  .ticket{
+    margin-top:12px;
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:8px;
+    padding:14px 14px 12px;
+  }
+  .ticket::before,
+  .ticket::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:14px;height:14px;
+    background:var(--bg-void);
+    border:1px solid var(--panel-edge);
+    border-radius:50%;
+  }
+  .ticket::before{ left:-8px; }
+  .ticket::after{ right:-8px; }
+
+  .ticket-title{
+    font-family:'Orbitron', sans-serif;
+    font-size:.82rem;
+    letter-spacing:.03em;
+    color:#fff;
+    margin:0 0 6px;
+  }
+  .ticket-desc{
+    margin:0;
+    font-size:.88rem;
+    line-height:1.4;
+    color:var(--text-dim);
+  }
+  .ticket-desc[contenteditable="true"]:focus{
+    outline:1px dashed var(--neon-cyan);
+    color:var(--text-soft);
+    border-radius:4px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:30px 20px 46px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:11px;
+    letter-spacing:.2em;
+    color:var(--text-dim);
+  }
+  footer span{ color:var(--neon-magenta); }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes flicker{
+    0%,19%,21%,23%,54%,56%,100%{ opacity:1; }
+    20%,22%,55%{ opacity:.78; }
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; } 50%{ opacity:.25; }
+  }
+  @keyframes bulb-chase{
+    0%,100%{ opacity:.25; }
+    50%{ opacity:1; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="marquee-frame">
+    <div class="marquee-bulbs" id="bulbs"></div>
+    <div class="marquee-inner">
+      <p class="eyebrow">TRANSMISIÓN NOCTURNA · SEÑAL EN VIVO</p>
+      <h1 class="title">CARTELERA</h1>
+      <p class="subtitle">Diez salas, diez señales. Elige una pantalla y dale play — cada frame es una función distinta.</p>
+      <div class="now-showing"><span class="dot"></span> 10 FUNCIONES EN CARTELERA</div>
+    </div>
+  </div>
+
+  <div class="filmstrip" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="cartelera">
+
+    <!-- Repite este bloque "slot" por cada uno de los 10 podcasts. -->
+    <!-- Para insertar tu podcast: reemplaza el <div class="embed-placeholder">...</div>
+         dentro de .embed-holder por el iframe/código de empotrado real. -->
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 01</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+          <!-- <iframe src="URL_DEL_PODCAST" allow="autoplay" loading="lazy"></iframe> -->
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 01</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 02</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 02</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 03</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 03</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 04</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 04</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 05</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 05</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 06</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 06</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 07</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 07</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 08</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 08</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 09</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 09</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen">
+        <span class="sala-tag">SALA 10</span>
+        <div class="embed-holder">
+          <div class="embed-placeholder">
+            <div class="play-glyph">▶</div>
+            PEGA AQUÍ EL EMBED
+          </div>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Nombre del episodio 10</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>SEÑAL TRANSMITIDA DESDE LA <span>CARTELERA</span> · FUNCIÓN CONTINUA</footer>
+
+<script>
+  // Genera las luces del marco del letrero (bombillas tipo cine)
+  (function(){
+    const box = document.getElementById('bulbs');
+    const count = 46;
+    const perimeter = box;
+    for(let i=0;i<count;i++){
+      const b = document.createElement('span');
+      const t = i/count;
+      let x, y;
+      if(t < 0.28){ x = t/0.28*100; y = 0; }
+      else if(t < 0.5){ x = 100; y = (t-0.28)/0.22*100; }
+      else if(t < 0.78){ x = 100-(t-0.5)/0.28*100; y = 100; }
+      else { x = 0; y = 100-(t-0.78)/0.22*100; }
+      b.style.left = x + '%';
+      b.style.top = y + '%';
+      b.style.animationDelay = (i * 0.07) + 's';
+      box.appendChild(b);
+    }
+  })();
+</script>
+</body>
+</html>
