@@ -175,7 +175,8 @@
 
   .screen{
     position:relative;
-    aspect-ratio:16/9;
+    min-height:400px;
+    display:flex;
     border-radius:10px;
     padding:10px;
     background:linear-gradient(145deg,#1c0f3a,#0d0620);
@@ -209,7 +210,7 @@
   .embed-holder{
     position:relative;
     width:100%;
-    height:100%;
+    flex:1;
     border-radius:6px;
     overflow:hidden;
     background:
@@ -346,15 +347,12 @@
     <div class="slot">
       <div class="screen">
         <span class="sala-tag">SALA 01</span>
-        
-          
-          <iframe src='https://widget.spreaker.com/player?show_id=6671022&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-            width='100%' height='400px' title='CRIME AND PUNISHMENT' frameborder='0'></iframe>
-          <!-- <iframe src="URL_DEL_PODCAST" allow="autoplay" loading="lazy"></iframe> -->
-        
-      
+        <div class="embed-holder">
+          <iframe src='https://widget.spreaker.com/player?show_id=6671022&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' width='100%' height='400px' title='CRIME AND PUNISHMENT' frameborder='0'></iframe>
+        </div>
+      </div>
       <div class="ticket">
-        <p class="ticket-title">Nombre del episodio 01</p>
+        <p class="ticket-title">Crime and Punishment</p>
         <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
       </div>
     </div>
