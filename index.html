@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CARTELERA //cine digital</title>
+<title>CARTELERA // cine digital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -38,7 +38,6 @@
     overflow-x:hidden;
   }
 
-  /* ---------- MARQUEE HEADER ---------- */
   .marquee-frame{
     position:relative;
     margin:22px auto 10px;
@@ -77,7 +76,7 @@
 
   .eyebrow{
     font-family:'Share Tech Mono', monospace;
-    letter-spacing:.45em;
+    letter-spacing:.4em;
     font-size:11px;
     color:var(--neon-cyan);
     text-shadow:0 0 8px rgba(5,242,219,.7);
@@ -125,7 +124,6 @@
     animation:pulse 1.4s infinite;
   }
 
-  /* ---------- FILM STRIP DIVIDER ---------- */
   .filmstrip{
     display:flex;
     justify-content:center;
@@ -141,41 +139,38 @@
     border-radius:2px;
   }
 
-  /* ---------- GRID ---------- */
+  /* ---------- GRID (auto-ajustable con flexbox) ---------- */
+  /* No depende de contar elementos exactos: si agregas o quitas salas,
+     se reacomodan solas en filas de 4 / 2 / 1 según pantalla, y la
+     última fila incompleta se centra automáticamente. */
   .cartelera{
     max-width:1180px;
     margin:0 auto 60px;
     padding:0 20px;
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
     gap:26px 22px;
   }
 
-  /* force 4 / 4 / 2 rhythm on desktop */
-  .cartelera .slot:nth-child(9),
-  .cartelera .slot:nth-child(10){
-    grid-column:span 2;
-  }
-
-  @media (max-width:900px){
-    .cartelera{ grid-template-columns:repeat(2, 1fr); }
-    .cartelera .slot:nth-child(9),
-    .cartelera .slot:nth-child(10){ grid-column:span 1; }
-  }
-  @media (max-width:520px){
-    .cartelera{ grid-template-columns:1fr; }
-  }
-
-  /* ---------- SLOT (screen + ticket) ---------- */
   .slot{
     display:flex;
     flex-direction:column;
     position:relative;
+    flex:1 1 250px;
+    max-width:268px;
+  }
+
+  @media (max-width:900px){
+    .slot{ flex-basis:44%; max-width:44%; }
+  }
+  @media (max-width:520px){
+    .slot{ flex-basis:100%; max-width:100%; }
   }
 
   .screen{
     position:relative;
-    min-height:400px;
+    min-height:220px;
     display:flex;
     border-radius:10px;
     padding:10px;
@@ -193,18 +188,35 @@
       0 18px 40px -16px rgba(0,0,0,.85);
   }
 
+  /* Salas de VIDEO (las primeras 3): mantienen proporción 16:9 real,
+     así el video nunca se ve estirado ni deformado. */
+  .screen.video{
+    min-height:0;
+    aspect-ratio:16/9;
+  }
+
+  /* Salas de AUDIO: alto fijo cómodo para reproductores con playlist
+     (Spreaker, etc.), sin forzar 16:9 que las recortaría. */
+  .screen.audio{
+    min-height:230px;
+  }
+
   .sala-tag{
     position:absolute;
     top:-11px; left:14px;
+    right:14px;
     font-family:'Share Tech Mono', monospace;
-    font-size:11px;
-    letter-spacing:.15em;
+    font-size:10px;
+    letter-spacing:.08em;
     background:var(--neon-magenta);
     color:#160225;
     padding:3px 9px;
     border-radius:4px;
     box-shadow:0 0 10px rgba(255,46,136,.7);
     z-index:2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   .embed-holder{
@@ -221,7 +233,6 @@
     justify-content:center;
   }
 
-  /* placeholder look — replace this div's content with the podcast embed code */
   .embed-placeholder{
     text-align:center;
     color:var(--text-dim);
@@ -249,7 +260,6 @@
     display:block;
   }
 
-  /* ---------- TICKET / DESCRIPTION BOX ---------- */
   .ticket{
     margin-top:12px;
     position:relative;
@@ -274,14 +284,14 @@
 
   .ticket-title{
     font-family:'Orbitron', sans-serif;
-    font-size:.82rem;
-    letter-spacing:.03em;
+    font-size:.8rem;
+    letter-spacing:.02em;
     color:#fff;
     margin:0 0 6px;
   }
   .ticket-desc{
     margin:0;
-    font-size:.88rem;
+    font-size:.85rem;
     line-height:1.4;
     color:var(--text-dim);
   }
@@ -291,7 +301,6 @@
     border-radius:4px;
   }
 
-  /* ---------- FOOTER ---------- */
   footer{
     text-align:center;
     padding:30px 20px 46px;
@@ -302,7 +311,6 @@
   }
   footer span{ color:var(--neon-magenta); }
 
-  /* ---------- ANIMATIONS ---------- */
   @keyframes flicker{
     0%,19%,21%,23%,54%,56%,100%{ opacity:1; }
     20%,22%,55%{ opacity:.78; }
@@ -325,10 +333,10 @@
   <div class="marquee-frame">
     <div class="marquee-bulbs" id="bulbs"></div>
     <div class="marquee-inner">
-      <p class="eyebrow">TU SALA DE CINE DIGITAL.24 HORAS</p>
+      <p class="eyebrow">TU SALA DE CINE DIGITAL · 24 HORAS</p>
       <h1 class="title">SYSTEMFAIL</h1>
       <p class="subtitle">"En este cine no compras boletos con dinero. Los ganas escuchando historias."</p>
-      <div class="now-showing"><span class="dot"></span> ESCUCHA UN PODCAST Y GANA CREDITOS</div>
+      <div class="now-showing"><span class="dot"></span> ESCUCHA UN PODCAST Y GANA CRÉDITOS</div>
     </div>
   </div>
 
@@ -340,75 +348,78 @@
 
   <main class="cartelera">
 
-    <!-- Repite este bloque "slot" por cada uno de los 10 podcasts. -->
-    <!-- Para insertar tu podcast: reemplaza el <div class="embed-placeholder">...</div>
-         dentro de .embed-holder por el iframe/código de empotrado real. -->
+    <!-- SALAS DE VIDEO (usan class="screen video" -> proporción 16:9 real) -->
 
-   <div class="slot">
-      <div class="screen">
-        <span class="sala-tag">SALA 01: He-man-Amos del Universo 2026</span>
-        <div class="embed-holder">
-        <iframe width="560" height="315" src="https://vimeos.net/embed-1w90yyz1pqnx.html?tt=PwRSgwAL%2BPJ%2BnpoJ7d4BzSjkJl1OWnraxJua3DDE0ZlXPSV68Vqc%2FDbjgiMoFleM4FMA%2B%2BuKZ6ynZrMB9cJ5Zg%3D%3D" 
-          title="Amos del Universo (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-          encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="ticket">
-        <p class="ticket-title">SALA 01: He-man-Amos del Universo 2026</p>
-        <p class="ticket-desc" contenteditable="true">En las regiones más lejanas del espacio, el Reino de Eternia está amenazado por el villano Skeletor y sus traviesos ejércitos de oscuridad. Para salvar el reino de su padre y proteger las vidas de sus seres queridos, el joven príncipe Adam tiene que recuperar una espada mítica y convertirse en el legendario guerrero conocido como "He-Man".</p>
-      </div>
-    </div>
-    
     <div class="slot">
-      <div class="screen">
-        <span class="sala-tag">SALA 02:Superwoman 2026</span>
+      <div class="screen video">
+        <span class="sala-tag">SALA 01: He-Man - Amos del Universo 2026</span>
         <div class="embed-holder">
-          <iframe width="560" height="315" src="https://vimeos.net/embed-3lrsrb8yg9r7.html?tt=FfYtGfqvyovG4RInHsrTC2TvDqF5Z3IHQ8JXSBTUu5qwnGzydL38auIFWTMO5p8X4WYYeZH9rxSO4BuKj1XR3w%3D%3D" 
-  title="Supergirl (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
-  encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>       
-          </div>
+          <iframe src="https://vimeos.net/embed-1w90yyz1pqnx.html?tt=PwRSgwAL%2BPJ%2BnpoJ7d4BzSjkJl1OWnraxJua3DDE0ZlXPSV68Vqc%2FDbjgiMoFleM4FMA%2B%2BuKZ6ynZrMB9cJ5Zg%3D%3D"
+            title="Amos del Universo (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
         </div>
-      <div class="ticket">
-        <p class="ticket-title">SALA 02:Super Woman 2026</p>
-        <p class="ticket-desc" contenteditable="true">Mientras celebra su cumpleaños número 21, Kara Zor-El viaja por la galaxia con su perro Krypto, durante el cual conoce a la joven Ruthye Marye Knoll y emprende una "búsqueda asesina de venganza".</p>
       </div>
-    </div>
-
-        <div class="slot">
-      <div class="screen">
-        <span class="sala-tag">SALA 03:Super Mario: Galaxy 2026</span>
-        <div class="embed-holder">
-          <iframe width="560" height="315" src="https://vimeos.net/embed-v7hdakih9470.html?tt=a93aIqeIP5Ya%2FNO89cPhJ09BzXuZhATlliRS4EwS6wSQdxten8Yu84mvDoom2iu729jbrUH0hSsS65A9FAD4JA%3D%3D" 
-            title="Super Mario Galaxy: La película (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-            encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
       <div class="ticket">
-        <p class="ticket-title">SALA 03: Supe Mario Galaxy 2026</p>
-        <p class="ticket-desc" contenteditable="true"></p>
+        <p class="ticket-title">He-Man: Amos del Universo</p>
+        <p class="ticket-desc" contenteditable="true">En las regiones más lejanas del espacio, el Reino de Eternia está amenazado por el villano Skeletor y sus ejércitos de oscuridad. El joven príncipe Adam debe recuperar una espada mítica y convertirse en el legendario guerrero conocido como "He-Man".</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen video">
+        <span class="sala-tag">SALA 02: Supergirl 2026</span>
+        <div class="embed-holder">
+          <iframe src="https://vimeos.net/embed-3lrsrb8yg9r7.html?tt=FfYtGfqvyovG4RInHsrTC2TvDqF5Z3IHQ8JXSBTUu5qwnGzydL38auIFWTMO5p8X4WYYeZH9rxSO4BuKj1XR3w%3D%3D"
+            title="Supergirl (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Supergirl</p>
+        <p class="ticket-desc" contenteditable="true">Mientras celebra su cumpleaños número 21, Kara Zor-El viaja por la galaxia con su perro Krypto. Durante el viaje conoce a la joven Ruthye Marye Knoll y emprende una búsqueda de venganza.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="screen video">
+        <span class="sala-tag">SALA 03: Super Mario Galaxy 2026</span>
+        <div class="embed-holder">
+          <iframe src="https://vimeos.net/embed-v7hdakih9470.html?tt=a93aIqeIP5Ya%2FNO89cPhJ09BzXuZhATlliRS4EwS6wSQdxten8Yu84mvDoom2iu729jbrUH0hSsS65A9FAD4JA%3D%3D"
+            title="Super Mario Galaxy: La película (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="ticket">
+        <p class="ticket-title">Super Mario Galaxy</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
+      </div>
+    </div>
+
+    <!-- SALAS DE AUDIO (usan class="screen audio") -->
+
+    <div class="slot">
+      <div class="screen audio">
         <span class="sala-tag">El Panda Shou</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=6971484&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-              width='25%' height='300px' title='panda shou' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=6971484&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="panda shou" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">El Panda Shou</p>
-        <p class="ticket-desc" contenteditable="true">Las bromas telefonicas más irreverentes.</p>
+        <p class="ticket-desc" contenteditable="true">Las bromas telefónicas más irreverentes.</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">Psicocatarsis</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=6719012&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' 
-            width='25%' height='300px' title='PSICOCATARSIS.' frameborder='0'></iframe>
-          </div>
+          <iframe src="https://widget.spreaker.com/player?show_id=6719012&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="PSICOCATARSIS." frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
@@ -418,98 +429,99 @@
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">El Viejo Librero</span>
         <div class="embed-holder">
-         <iframe src='https://widget.spreaker.com/player?show_id=5637306&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-           width='25%' height='300px' title='El Viejo Librero' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=5637306&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="El Viejo Librero" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">El Viejo Librero</p>
-        <p class="ticket-desc" contenteditable="true">Ciencia,misterio,audiolibros y un poco más.</p>
+        <p class="ticket-desc" contenteditable="true">Ciencia, misterio, audiolibros y un poco más.</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">Chucho el Roto</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=7170337&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-            width='25%' height='300px' title='CHUCHO EL ROTO- la radionovela' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=7170337&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="CHUCHO EL ROTO - la radionovela" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">Chucho el Roto</p>
-        <p class="ticket-desc" contenteditable="true">Radionovela:Robaba a los ricos.Ayudaba a los pobres.Burlaba constantemente a la policía.</p>
+        <p class="ticket-desc" contenteditable="true">Radionovela: robaba a los ricos, ayudaba a los pobres y burlaba constantemente a la policía.</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">El Ojo de Vidrio</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=7173474&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-            width='25%' height='300px' title='Porfirio Cadena- El ojo de vidrio' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=7173474&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="Porfirio Cadena - El ojo de vidrio" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
-        <p class="ticket-title">El ojo de Vidrio</p>
-        <p class="ticket-desc" contenteditable="true">Radionovela:Buscaba venganza. El western mexicano.</p>
+        <p class="ticket-title">El Ojo de Vidrio</p>
+        <p class="ticket-desc" contenteditable="true">Radionovela: buscaba venganza. El western mexicano.</p>
       </div>
     </div>
+
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">Pesadillas Reales</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=5745666&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-            width='25%' height='300px' title='PESADILLAS REALES' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=5745666&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="PESADILLAS REALES" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">Pesadillas Reales</p>
-        <p class="ticket-desc" contenteditable="true">¡Prepárate para sentir el escalofrío en cada palabra susurrada!.</p>
+        <p class="ticket-desc" contenteditable="true">¡Prepárate para sentir el escalofrío en cada palabra susurrada!</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">La Señora de las Lomas</span>
         <div class="embed-holder">
-        <iframe src='https://widget.spreaker.com/player?show_id=6092055&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-          width='25%' height='300px' title='nay salvatori la gran señora de las lomas' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=6092055&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="nay salvatori la gran señora de las lomas" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">Nay Salvatori</p>
-        <p class="ticket-desc" contenteditable="true">Aqui pura señora bien.</p>
+        <p class="ticket-desc" contenteditable="true">Aquí pura señora bien.</p>
       </div>
     </div>
 
     <div class="slot">
-      <div class="screen">
+      <div class="screen audio">
         <span class="sala-tag">Remi</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=6241544&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' 
-            width='25%' height='300px' title='Remi el niño de nadie' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=6241544&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="Remi el niño de nadie" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
         <p class="ticket-title">Remi: el niño de nadie</p>
-        <p class="ticket-desc" contenteditable="true">Esta es la historia de un niño,que fue vendido contra su voluntad por su padrastro a un actor ambulante italiano.</p>
+        <p class="ticket-desc" contenteditable="true">La historia de un niño que fue vendido contra su voluntad por su padrastro a un actor ambulante italiano.</p>
       </div>
     </div>
-    
- <div class="slot">
-      <div class="screen">
+
+    <div class="slot">
+      <div class="screen audio">
         <span class="sala-tag">Crimen y Castigo</span>
         <div class="embed-holder">
-          <iframe src='https://widget.spreaker.com/player?show_id=6671022&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true'
-            width='25%' height='300px' title='CRIME AND PUNISHMENT' frameborder='0'></iframe>
+          <iframe src="https://widget.spreaker.com/player?show_id=6671022&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true"
+            title="CRIME AND PUNISHMENT" frameborder="0"></iframe>
         </div>
       </div>
       <div class="ticket">
-        <p class="ticket-title">Crimen y castigo</p>
+        <p class="ticket-title">Crimen y Castigo</p>
         <p class="ticket-desc" contenteditable="true">Criminales relatan sus historias.</p>
       </div>
     </div>
@@ -519,11 +531,9 @@
   <footer>SEÑAL TRANSMITIDA DESDE LA <span>CARTELERA</span> · FUNCIÓN CONTINUA</footer>
 
 <script>
-  // Genera las luces del marco del letrero (bombillas tipo cine)
   (function(){
     const box = document.getElementById('bulbs');
     const count = 46;
-    const perimeter = box;
     for(let i=0;i<count;i++){
       const b = document.createElement('span');
       const t = i/count;
