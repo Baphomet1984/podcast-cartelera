@@ -124,6 +124,33 @@
     animation:pulse 1.4s infinite;
   }
 
+  /* Botón "Community" -> grupo de WhatsApp */
+  .community-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    margin-top:16px;
+    padding:11px 26px;
+    border-radius:999px;
+    border:1px solid transparent;
+    background:linear-gradient(90deg, var(--neon-magenta), var(--neon-violet));
+    color:#fff;
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:.8rem;
+    letter-spacing:.1em;
+    text-decoration:none;
+    box-shadow:0 0 18px rgba(255,46,136,.45), 0 8px 20px -10px rgba(0,0,0,.7);
+    transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .community-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 26px rgba(255,46,136,.7), 0 10px 24px -10px rgba(0,0,0,.8);
+    filter:brightness(1.08);
+  }
+  .community-btn:active{ transform:translateY(0); }
+  .community-btn svg{ width:16px; height:16px; flex-shrink:0; }
+
   .filmstrip{
     display:flex;
     justify-content:center;
@@ -188,18 +215,62 @@
       0 18px 40px -16px rgba(0,0,0,.85);
   }
 
-  /* Salas de VIDEO (las primeras 3): mantienen proporción 16:9 real,
-     así el video nunca se ve estirado ni deformado. */
+  /* Salas de VIDEO (las primeras 3): el área del video respeta 16:9,
+     pero se le suma un margen fijo abajo para que la barra de
+     controles del reproductor (que aparece al pasar el cursor) no
+     quede recortada por el borde del frame. */
   .screen.video{
     min-height:0;
-    aspect-ratio:16/9;
+    display:block;
+    height:auto;
+  }
+  .screen.video .embed-holder{
+    position:relative;
+    width:100%;
+    height:auto;
+    padding-top:calc(56.25% + 46px); /* 16:9 + espacio para controles */
+    flex:none;
+    overflow:visible;
+  }
+  .screen.video .embed-holder iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border-radius:6px;
   }
 
-  /* Salas de AUDIO: alto fijo cómodo para reproductores con playlist
-     (Spreaker, etc.), sin forzar 16:9 que las recortaría. */
+  /* Salas de AUDIO: alto fijo de 380px, suficiente para que se vea
+     la lista de reproducción/capítulos debajo de la barra de progreso. */
   .screen.audio{
-    min-height:230px;
+    height:380px;
   }
+
+  /* Botón de pantalla completa debajo de los frames de video */
+  .fullscreen-btn{
+    margin-top:10px;
+    width:100%;
+    padding:9px 10px;
+    background:transparent;
+    border:1px solid var(--neon-cyan);
+    border-radius:6px;
+    color:var(--neon-cyan);
+    font-family:'Share Tech Mono', monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:background .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .fullscreen-btn:hover{
+    background:var(--neon-cyan);
+    color:#03151a;
+    box-shadow:0 0 16px rgba(5,242,219,.6);
+  }
+  .fullscreen-btn svg{ width:12px; height:12px; flex-shrink:0; }
 
   .sala-tag{
     position:absolute;
@@ -333,10 +404,15 @@
   <div class="marquee-frame">
     <div class="marquee-bulbs" id="bulbs"></div>
     <div class="marquee-inner">
-      <p class="eyebrow">TU SALA DE CINE DIGITAL · 24 HORAS</p>
+      <p class="eyebrow">TU SALA DE CINE PORTATIL · 24 HORAS</p>
       <h1 class="title">SYSTEMFAIL</h1>
-      <p class="subtitle">"En este cine no compras boletos con dinero. Los ganas escuchando historias."</p>
-      <div class="now-showing"><span class="dot"></span> ESCUCHA UN PODCAST Y GANA CRÉDITOS</div>
+      <p class="subtitle">"Esta es la primera función del Cine SYSTEMFAIL. Aún está en construcción, pero las puertas ya están abiertas. Y ES GRATIS"</p>
+      <div class="now-showing"><span class="dot"></span> UNETE A LA COMUNIDAD Y SÉ PARTE DEL SISTEMA · NO OLVIDES COMPARTIR</div>
+      <br>
+      <a class="community-btn" href="https://chat.whatsapp.com/DX22X4FlH889cCpOCfVvqS?s=cl&p=a&ilr=1&amv=2" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.28-1.38a9.9 9.9 0 0 0 4.71 1.2h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.87 9.87 0 0 0 12.04 2zm0 1.67c2.16 0 4.2.84 5.72 2.37a8.06 8.06 0 0 1 2.37 5.72c0 4.46-3.63 8.09-8.1 8.09h-.01a8.1 8.1 0 0 1-4.12-1.13l-.3-.17-3.13.82.84-3.05-.19-.31a8.05 8.05 0 0 1-1.24-4.32c0-4.46 3.63-8.02 8.16-8.02zm-4.5 4.6c-.16 0-.42.06-.64.31-.22.24-.85.83-.85 2.02s.87 2.35.99 2.51c.12.16 1.69 2.72 4.25 3.72 2.1.83 2.53.66 2.99.62.46-.04 1.48-.6 1.69-1.19.21-.58.21-1.08.15-1.19-.06-.1-.22-.16-.46-.28-.24-.12-1.48-.73-1.71-.81-.23-.08-.4-.12-.56.12-.16.24-.64.81-.79.98-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.44-1.35-1.68-.14-.24-.01-.37.11-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.86-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.47-.01z"/></svg>
+        COMMUNITY
+      </a>
     </div>
   </div>
 
@@ -355,11 +431,15 @@
         <span class="sala-tag">SALA 01: He-Man - Amos del Universo 2026</span>
         <div class="embed-holder">
           <iframe src="https://vimeos.net/embed-1w90yyz1pqnx.html?tt=PwRSgwAL%2BPJ%2BnpoJ7d4BzSjkJl1OWnraxJua3DDE0ZlXPSV68Vqc%2FDbjgiMoFleM4FMA%2B%2BuKZ6ynZrMB9cJ5Zg%3D%3D"
-            title="Amos del Universo (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="20"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            title="Amos del Universo (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowfullscreen></iframe>
         </div>
       </div>
+      <button class="fullscreen-btn" type="button" onclick="goFullscreen(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        PANTALLA COMPLETA
+      </button>
       <div class="ticket">
         <p class="ticket-title">He-Man: Amos del Universo</p>
         <p class="ticket-desc" contenteditable="true">En las regiones más lejanas del espacio, el Reino de Eternia está amenazado por el villano Skeletor y sus ejércitos de oscuridad. El joven príncipe Adam debe recuperar una espada mítica y convertirse en el legendario guerrero conocido como "He-Man".</p>
@@ -372,10 +452,14 @@
         <div class="embed-holder">
           <iframe src="https://vimeos.net/embed-3lrsrb8yg9r7.html?tt=FfYtGfqvyovG4RInHsrTC2TvDqF5Z3IHQ8JXSBTUu5qwnGzydL38auIFWTMO5p8X4WYYeZH9rxSO4BuKj1XR3w%3D%3D"
             title="Supergirl (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowfullscreen></iframe>
         </div>
       </div>
+      <button class="fullscreen-btn" type="button" onclick="goFullscreen(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        PANTALLA COMPLETA
+      </button>
       <div class="ticket">
         <p class="ticket-title">Supergirl</p>
         <p class="ticket-desc" contenteditable="true">Mientras celebra su cumpleaños número 21, Kara Zor-El viaja por la galaxia con su perro Krypto. Durante el viaje conoce a la joven Ruthye Marye Knoll y emprende una búsqueda de venganza.</p>
@@ -388,15 +472,17 @@
         <div class="embed-holder">
           <iframe src="https://vimeos.net/embed-v7hdakih9470.html?tt=a93aIqeIP5Ya%2FNO89cPhJ09BzXuZhATlliRS4EwS6wSQdxten8Yu84mvDoom2iu729jbrUH0hSsS65A9FAD4JA%3D%3D"
             title="Super Mario Galaxy: La película (2026) - LaMovie – Películas, Series y Animes Online en HD Gratis" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowfullscreen></iframe>
         </div>
       </div>
+      <button class="fullscreen-btn" type="button" onclick="goFullscreen(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        PANTALLA COMPLETA
+      </button>
       <div class="ticket">
         <p class="ticket-title">Super Mario Galaxy</p>
-        <p class="ticket-desc" contenteditable="true">Mario y Luigi se enfrentan una nueva amenaza: Bowser Jr., quién está decidido liberar a su padre del cautiverio y restaurar el legado familiar. Junto con nuevos y viejos compañeros, los hermanos viajan a través de las estrellas para detener la cruzada del joven heredero.
-
-</p>
+        <p class="ticket-desc" contenteditable="true">Escribe aquí una breve descripción del episodio.</p>
       </div>
     </div>
 
@@ -530,9 +616,19 @@
 
   </main>
 
-  <footer>SEÑAL TRANSMITIDA DESDE LA <span>CARTELERA</span> · FUNCIÓN CONTINUA</footer>
+  <footer>SEÑAL TRANSMITIDA DESDE EL <span>SYSTEMFAIL.MEDIA.SERVER</span> · FUNCIÓN CONTINUA</footer>
 
 <script>
+  // Expande el iframe de video de esa sala a pantalla completa
+  function goFullscreen(btn){
+    const frame = btn.closest('.slot').querySelector('iframe');
+    if(!frame) return;
+    if(frame.requestFullscreen) frame.requestFullscreen();
+    else if(frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+    else if(frame.mozRequestFullScreen) frame.mozRequestFullScreen();
+    else if(frame.msRequestFullscreen) frame.msRequestFullscreen();
+  }
+
   (function(){
     const box = document.getElementById('bulbs');
     const count = 46;
